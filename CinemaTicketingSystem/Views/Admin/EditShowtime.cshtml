@@ -1,0 +1,92 @@
+﻿@model CinemaTicketingSystem.ViewModels.ShowtimeViewModel
+
+@{
+    ViewData["Title"] = "Edit Showtime";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h2 class="mb-4">Edit Showtime</h2>
+
+            <form asp-action="EditShowtime" asp-route-id="@ViewBag.ShowtimeId" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="MovieId" class="form-label"></label>
+                                    <select asp-for="MovieId" class="form-select" asp-items="@(new SelectList(ViewBag.Movies, "MovieId", "Title"))">
+                                        <option value="">-- Select Movie --</option>
+                                    </select>
+                                    <span asp-validation-for="MovieId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="CinemaId" class="form-label"></label>
+                                    <select asp-for="CinemaId" class="form-select" asp-items="@(new SelectList(ViewBag.Cinemas, "CinemaId", "Name"))">
+                                        <option value="">-- Select Cinema --</option>
+                                    </select>
+                                    <span asp-validation-for="CinemaId" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="StartTime" class="form-label"></label>
+                                    <input asp-for="StartTime" type="datetime-local" class="form-control" />
+                                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Price" class="form-label"></label>
+                                    <input asp-for="Price" type="number" step="0.01" class="form-control" />
+                                    <span asp-validation-for="Price" class="text-danger"></span>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-3">
+                                <div class="form-group mb-3">
+                                    <label asp-for="TotalSeats" class="form-label"></label>
+                                    <select asp-for="TotalSeats" class="form-control">
+                                        @for (int i = 50; i <= 300; i += 10)
+                                        {
+                                            <option value="@i">@i</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="TotalSeats" class="text-danger"></span>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-grid gap-2 d-md-flex">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Update Showtime
+                            </button>
+                            <a asp-action="ManageShowtimes" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to List
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

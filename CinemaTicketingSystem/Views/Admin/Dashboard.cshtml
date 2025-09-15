@@ -1,0 +1,228 @@
+﻿@model CinemaTicketingSystem.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container">
+    <h2>Admin Dashboard</h2>
+    <hr />
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex gap-2">
+                <a asp-controller="Admin" asp-action="CreateShowtime" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Create Showtime
+                </a>
+                <a asp-controller="Admin" asp-action="BookingReport" class="btn btn-success">
+                    <i class="fas fa-ticket-alt me-2"></i>View Booking Report
+                </a>
+                <a asp-controller="Admin" asp-action="RevenueReport" class="btn btn-info">
+                    <i class="fas fa-chart-line me-2"></i>View Revenue Report
+                </a>
+                <a asp-controller="Movies" asp-action="Create" class="btn btn-warning">
+                    <i class="fas fa-film me-2"></i>Add New Movie
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-primary">
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 2.5rem;">@Model.TotalBookings</h5>
+                    <p class="card-text">Total Bookings</p>
+                    <i class="fas fa-ticket-alt fa-2x"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 2.5rem;">@Model.TotalRevenue.ToString("C")</h5>
+                    <p class="card-text">Total Revenue</p>
+                    <i class="fas fa-dollar-sign fa-2x"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-info">
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 2.5rem;">@Model.UpcomingShowtimes</h5>
+                    <p class="card-text">Upcoming Shows</p>
+                    <i class="fas fa-film fa-2x"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-warning">
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 2.5rem;">@Model.TotalUsers</h5>
+                    <p class="card-text">Total Users</p>
+                    <i class="fas fa-users fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Row -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6>Today's Revenue</h6>
+                    <h4>@ViewBag.TodayRevenue?.ToString("C")</h4>
+                    <small class="text-muted">From @ViewBag.TodayBookings bookings</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6>This Week's Revenue</h6>
+                    <h4>@ViewBag.WeekRevenue?.ToString("C")</h4>
+                    <small class="text-muted">@ViewBag.WeekBookings bookings</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6>This Month's Revenue</h6>
+                    <h4>@ViewBag.MonthRevenue?.ToString("C")</h4>
+                    <small class="text-muted">@ViewBag.MonthBookings bookings</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Two Column Layout -->
+    <div class="row">
+        <!-- Recent Bookings -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Recent Bookings</h5>
+                    <a asp-controller="Admin" asp-action="BookingReport" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentBookings.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Movie</th>
+                                        <th>User</th>
+                                        <th>Tickets</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var booking in Model.RecentBookings)
+                                    {
+                                        <tr>
+                                            <td>@booking.MovieTitle</td>
+                                            <td>@booking.UserName</td>
+                                            <td>@booking.NumberOfTickets</td>
+                                            <td>@booking.TotalAmount.ToString("C")</td>
+                                            <td>@booking.BookingDate.ToString("g")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No recent bookings found.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Reports -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Quick Reports</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a asp-controller="Admin" asp-action="BookingReport" class="list-group-item list-group-item-action">
+                            <i class="fas fa-ticket-alt me-2"></i>Booking Report
+                        </a>
+                        <a asp-controller="Admin" asp-action="RevenueReport" class="list-group-item list-group-item-action">
+                            <i class="fas fa-chart-line me-2"></i>Revenue Report
+                        </a>
+                        <a asp-controller="Admin" asp-action="ManageShowtimes" class="list-group-item list-group-item-action">
+                            <i class="fas fa-clock me-2"></i>Manage Showtimes
+                        </a>
+                        <a asp-controller="Movies" asp-action="Index" class="list-group-item list-group-item-action">
+                            <i class="fas fa-film me-2"></i>Manage Movies
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Movies -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5>Top Movies</h5>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.TopMovies != null)
+                    {
+                        <ol class="list-group list-group-numbered">
+                            @foreach (var movie in ViewBag.TopMovies)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">@movie.Title</div>
+                                        @movie.Revenue.ToString("C")
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">@movie.Tickets tickets</span>
+                                </li>
+                            }
+                        </ol>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No data available</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            transition: transform 0.2s;
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+        }
+
+            .card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            }
+
+        .stat-card {
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+
+        .list-group-item-action:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+}

@@ -1,0 +1,144 @@
+﻿@model IEnumerable<CinemaTicketingSystem.Models.Concession>
+@{
+    var booking = ViewBag.Booking as CinemaTicketingSystem.Models.Booking;
+}
+
+<div class="container py-4">
+    <h2>Add Concessions to Your Booking</h2>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Booking Details</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Movie:</strong> @booking.Showtime.Movie.Title</p>
+            <p><strong>Showtime:</strong> @booking.Showtime.StartTime.ToString("f")</p>
+            <p><strong>Tickets:</strong> @booking.NumberOfTickets</p>
+        </div>
+    </div>
+
+    <form asp-action="CreateOrder" method="post">
+        <input type="hidden" name="bookingId" value="@booking.BookingId" />
+
+        <div class="row">
+            @foreach (var category in Model.GroupBy(c => c.Category))
+            {
+                <div class="col-12 mb-4">
+                    <h4 class="border-bottom pb-2">@category.Key</h4>
+                    <div class="row">
+                        @foreach (var item in category)
+                        {
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@item.Name</h5>
+                                        <p class="card-text text-muted">@item.Description</p>
+                                        <p class="card-text">
+                                            <strong class="text-success">@item.Price.ToString("C")</strong>
+                                            @if (item.StockQuantity < 10)
+                                            {
+                                                <span class="badge bg-warning float-end">Only @item.StockQuantity left</span>
+                                            }
+                                        </p>
+
+                                        <div class="input-group">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="decrementQuantity(@item.ConcessionId)">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            <input type="number"
+                                                   id="quantity-@item.ConcessionId"
+                                                   name="concessions[@item.ConcessionId]"
+                                                   value="0"
+                                                   min="0"
+                                                   max="@item.StockQuantity"
+                                                   class="form-control text-center"
+                                                   onchange="updateTotal()">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="incrementQuantity(@item.ConcessionId, @item.StockQuantity)">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5>Order Summary</h5>
+                <div id="order-summary">
+                    <p class="text-muted">No items selected</p>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <strong>Total: <span id="total-amount">$0.00</span></strong>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-shopping-cart me-2"></i>Add to Booking
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function incrementQuantity(id, max) {
+            const input = document.getElementById('quantity-' + id);
+            if (parseInt(input.value) < max) {
+                input.value = parseInt(input.value) + 1;
+                updateTotal();
+            }
+        }
+
+        function decrementQuantity(id) {
+            const input = document.getElementById('quantity-' + id);
+            if (parseInt(input.value) > 0) {
+                input.value = parseInt(input.value) - 1;
+                updateTotal();
+            }
+        }
+
+        function updateTotal() {
+            let total = 0;
+            const items = [];
+
+        @foreach (var item in Model)
+        {
+            <text>
+                    const qty@(item.ConcessionId) = parseInt(document.getElementById('quantity-@item.ConcessionId').value) || 0;
+                    if (qty@(item.ConcessionId) > 0) {
+                        total += qty@(item.ConcessionId) * @item.Price;
+                        items.push({
+                            name: '@item.Name',
+                            quantity: qty@(item.ConcessionId),
+                            price: @item.Price,
+                            total: qty@(item.ConcessionId) * @item.Price
+                        });
+                    }
+            </text>
+        }
+
+            // Update summary
+            const summary = document.getElementById('order-summary');
+            const totalElement = document.getElementById('total-amount');
+
+            if (items.length === 0) {
+                summary.innerHTML = '<p class="text-muted">No items selected</p>';
+            } else {
+                let html = '';
+                items.forEach(item => {
+                    html += `<div class="d-flex justify-content-between">
+                        <span>${item.name} x${item.quantity}</span>
+                        <span>${item.total.toFixed(2)}</span>
+                    </div>`;
+                });
+                summary.innerHTML = html;
+            }
+
+            totalElement.textContent = '$' + total.toFixed(2);
+        }
+    </script>
+}

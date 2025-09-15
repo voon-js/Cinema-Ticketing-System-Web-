@@ -1,0 +1,100 @@
+﻿@model IEnumerable<CinemaTicketingSystem.Models.Booking>
+
+@{
+    ViewData["Title"] = "Booking Report";
+}
+
+<div class="container">
+    <h2>Booking Report</h2>
+    <hr />
+
+    <!-- Filter Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Filter Bookings</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" name="startDate" class="form-control"
+                           value="@(ViewBag.StartDate?.ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">End Date</label>
+                    <input type="date" name="endDate" class="form-control"
+                           value="@(ViewBag.EndDate?.ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">Apply Filters</button>
+                    <a asp-action="BookingReport" class="btn btn-secondary">Clear</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bookings Table -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5>Bookings</h5>
+            <span class="badge bg-primary">@Model.Count() records found</span>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Movie</th>
+                                <th>Cinema</th>
+                                <th>Showtime</th>
+                                <th>User</th>
+                                <th>Tickets</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Booking Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var booking in Model)
+                            {
+                                <tr>
+                                    <td>#@booking.BookingId</td>
+                                    <td>@booking.Showtime?.Movie?.Title</td>
+                                    <td>@booking.Showtime?.Cinema?.Name</td>
+                                    <td>@booking.Showtime?.StartTime.ToString("g")</td>
+                                    <td>@booking.User?.Username</td>
+                                    <td>@booking.NumberOfTickets</td>
+                                    <td>@booking.TotalAmount.ToString("C")</td>
+                                    <td>
+                                        <span class="badge bg-@(booking.Status == "Confirmed" ? "success" :
+                                                            booking.Status == "Cancelled" ? "danger" : "secondary")">
+                                            @booking.Status
+                                        </span>
+                                    </td>
+                                    <td>@booking.BookingDate.ToString("g")</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-primary">
+                                <td colspan="5" class="text-end"><strong>Total:</strong></td>
+                                <td><strong>@Model.Sum(b => b.NumberOfTickets)</strong></td>
+                                <td><strong>@Model.Sum(b => b.TotalAmount).ToString("C")</strong></td>
+                                <td colspan="2"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> No bookings found for the selected filters.
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,233 @@
+﻿@model CinemaTicketingSystem.ViewModels.SeatSelectionViewModel
+
+@{
+    ViewData["Title"] = "Select Seats";
+}
+
+<h2>Select Seats for @Model.MovieTitle</h2>
+<h4>@Model.CinemaName - @Model.Showtime.ToString("f")</h4>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="seat-map-container">
+            <div class="screen-label text-center mb-3">Screen</div>
+
+            <form asp-action="SelectSeats" method="post" id="seatForm">
+                <input type="hidden" asp-for="ShowtimeId" />
+
+                <!-- Add validation message area -->
+                <div class="alert alert-danger" id="validationAlert" style="display: none;">
+                    Please select at least one seat.
+                </div>
+
+                <div class="seat-map">
+                    @for (int row = 0; row < Model.TotalSeats / Model.SeatsPerRow; row++)
+                    {
+                        <div class="seat-row">
+                            <span class="row-label">Row @((char)('A' + row))</span>
+                            @for (int seat = 0; seat < Model.SeatsPerRow; seat++)
+                            {
+                                var seatNumber = row * Model.SeatsPerRow + seat;
+                                var isAvailable = Model.SeatMap[seatNumber] == '0';
+
+                                <label class="seat @(!isAvailable ? "occupied" : "")">
+                                    <input type="checkbox" name="SelectedSeats" value="@seatNumber"
+                                    @(!isAvailable ? "disabled" : "") />
+                                    <span class="seat-number">@(seat + 1)</span>
+                                </label>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">Confirm Selection</button>
+                    <span class="ms-3" id="selectedCount">0 seats selected</span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="booking-summary card">
+            <div class="card-header">
+                <h5>Booking Summary</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Movie:</strong> @Model.MovieTitle</p>
+                <p><strong>Time:</strong> @Model.Showtime.ToString("f")</p>
+                <p><strong>Price per seat:</strong> @Model.Price.ToString("C")</p>
+                <p><strong>Selected seats:</strong> <span id="summarySeats">None</span></p>
+                <p><strong>Total amount:</strong> <span id="totalAmount">$0.00</span></p>
+            </div>
+        </div>
+
+        <div class="seat-legend mt-3">
+            <div class="legend-item">
+                <span class="seat-available"></span> Available
+            </div>
+            <div class="legend-item">
+                <span class="seat-selected"></span> Selected
+            </div>
+            <div class="legend-item">
+                <span class="seat-occupied"></span> Occupied
+            </div>
+        </div>
+
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <span id="availableSeatsCount">@Model.SeatMap.Count(c => c == '0') seats available</span>
+            - Seats update in real-time
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .seat-map-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .screen-label {
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .seat-row {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .row-label {
+            width: 50px;
+            font-weight: bold;
+        }
+
+        .seat {
+            display: inline-block;
+            margin: 2px;
+            position: relative;
+        }
+
+        .seat input[type="checkbox"] {
+            display: none;
+        }
+
+        .seat .seat-number {
+            display: block;
+            width: 30px;
+            height: 30px;
+            background: #28a745;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .seat input[type="checkbox"]:checked + .seat-number {
+            background: #ffc107;
+            color: black;
+        }
+
+        .seat.occupied .seat-number {
+            background: #dc3545;
+            cursor: not-allowed;
+        }
+
+        .seat-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .seat-available, .seat-selected, .seat-occupied {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        .seat-available { background: #28a745; }
+        .seat-selected { background: #ffc107; }
+        .seat-occupied { background: #dc3545; }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Initialize selected seats count
+            updateBookingSummary();
+
+            // Handle seat selection changes
+            $('input[name="SelectedSeats"]').change(function() {
+                updateBookingSummary();
+            });
+
+            // Update booking summary function
+            function updateBookingSummary() {
+                const selectedSeats = [];
+                const selectedSeatNumbers = [];
+                
+                $('input[name="SelectedSeats"]:checked').each(function() {
+                    const seatNumber = parseInt($(this).val());
+                    const row = String.fromCharCode(65 + Math.floor(seatNumber / @Model.SeatsPerRow));
+                    const seat = (seatNumber % @Model.SeatsPerRow) + 1;
+                    const seatLabel = row + seat;
+                    
+                    selectedSeats.push(seatLabel);
+                    selectedSeatNumbers.push(seatNumber);
+                });
+                
+                const totalAmount = selectedSeats.length * @Model.Price;
+                
+                // Update UI elements
+                $('#selectedCount').text(selectedSeats.length + ' seat(s) selected');
+                $('#summarySeats').text(selectedSeats.length > 0 ? selectedSeats.join(', ') : 'None');
+                $('#totalAmount').text('$' + totalAmount.toFixed(2));
+                
+                // Debug output
+                console.log('Selected seats:', selectedSeats);
+                console.log('Total amount:', totalAmount);
+            }
+
+            // Form validation
+            $('#seatForm').submit(function(e) {
+                const selectedSeats = $('input[name="SelectedSeats"]:checked').length;
+                
+                if (selectedSeats === 0) {
+                    e.preventDefault();
+                    $('#validationAlert').fadeIn();
+                    
+                    // Scroll to validation message
+                    $('html, body').animate({
+                        scrollTop: $('#validationAlert').offset().top - 100
+                    }, 500);
+                    
+                    return false;
+                }
+            });
+            
+            // Hide validation message when user selects a seat
+            $('input[name="SelectedSeats"]').change(function() {
+                if ($('input[name="SelectedSeats"]:checked').length > 0) {
+                    $('#validationAlert').fadeOut();
+                }
+            });
+        });
+    </script>
+}

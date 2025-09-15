@@ -1,0 +1,26 @@
+﻿@model IEnumerable<CinemaTicketingSystem.Models.Movie>
+
+@{
+    ViewData["Title"] = "Select Movie";
+}
+
+<h2>Select a Movie</h2>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                @if (!string.IsNullOrEmpty(item.PosterImage))
+                {
+                    <img src="@item.PosterImage" class="card-img-top" alt="@item.Title" style="height: 300px; object-fit: cover;">
+                }
+                <div class="card-body">
+                    <h5 class="card-title">@item.Title</h5>
+                    <p class="card-text">@item.Genre • @item.Duration minutes</p>
+                    <a asp-action="SelectShowtime" asp-route-id="@item.MovieId" class="btn btn-primary">Select Showtime</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

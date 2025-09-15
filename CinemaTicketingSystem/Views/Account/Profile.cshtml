@@ -1,0 +1,82 @@
+﻿@model CinemaTicketingSystem.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h2 class="mb-4">My Profile</h2>
+
+            <!-- Profile Card -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>Profile Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Username</label>
+                                <p class="form-control-plaintext">@Model.Username</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email Address</label>
+                                <p class="form-control-plaintext">@Model.Email</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Member Since</label>
+                                <p class="form-control-plaintext">@Model.RegistrationDate?.ToString("MMMM dd, yyyy")</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Total Bookings</label>
+                                <p class="form-control-plaintext">@Model.TotalBookings</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <a asp-action="EditProfile" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-edit me-2"></i>Edit Profile
+                    </a>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <a asp-action="ChangePassword" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-key me-2"></i>Change Password
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0"><i class="fas fa-link me-2"></i>Quick Links</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Booking" asp-action="MyBookings" class="btn btn-outline-info text-start">
+                            <i class="fas fa-ticket-alt me-2"></i>View My Bookings
+                        </a>
+                        <a asp-controller="Booking" asp-action="SelectMovie" class="btn btn-outline-success text-start">
+                            <i class="fas fa-plus-circle me-2"></i>Book New Tickets
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

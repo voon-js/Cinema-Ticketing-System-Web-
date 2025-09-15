@@ -1,0 +1,86 @@
+﻿@{
+    ViewData["Title"] = "Revenue Report";
+}
+
+<div class="container">
+    <h2>Revenue Report</h2>
+    <hr />
+
+    <!-- Revenue by Movie -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Revenue by Movie</h5>
+        </div>
+        <div class="card-body">
+            @if (ViewBag.RevenueByMovie != null && ViewBag.RevenueByMovie.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Movie</th>
+                                <th>Tickets Sold</th>
+                                <th>Total Revenue</th>
+                                <th>Average per Ticket</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in ViewBag.RevenueByMovie)
+                            {
+                                <tr>
+                                    <td>@item.Movie</td>
+                                    <td>@item.TicketCount</td>
+                                    <td>@item.TotalRevenue.ToString("C")</td>
+                                    <td>@((item.TotalRevenue / item.TicketCount).ToString("C"))</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No revenue data available.</p>
+            }
+        </div>
+    </div>
+
+    <!-- Revenue by Cinema -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Revenue by Cinema</h5>
+        </div>
+        <div class="card-body">
+            @if (ViewBag.RevenueByCinema != null && ViewBag.RevenueByCinema.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Cinema</th>
+                                <th>Tickets Sold</th>
+                                <th>Total Revenue</th>
+                                <th>Average per Ticket</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in ViewBag.RevenueByCinema)
+                            {
+                                <tr>
+                                    <td>@item.Cinema</td>
+                                    <td>@item.TicketCount</td>
+                                    <td>@item.TotalRevenue.ToString("C")</td>
+                                    <td>@((item.TotalRevenue / item.TicketCount).ToString("C"))</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No cinema revenue data available.</p>
+            }
+        </div>
+    </div>
+</div>

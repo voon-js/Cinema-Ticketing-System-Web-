@@ -1,0 +1,89 @@
+﻿@model IEnumerable<CinemaTicketingSystem.Models.Showtime>
+
+@{
+    ViewData["Title"] = "Manage Showtimes";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">Manage Showtimes</h2>
+
+    <!-- Filter Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Filter Showtimes</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <input type="text" name="searchString" class="form-control" placeholder="Search by movie or cinema..." value="@ViewBag.SearchString" />
+                </div>
+                <div class="col-md-4">
+                    <input type="date" name="dateFilter" class="form-control" value="@(ViewBag.DateFilter?.ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Showtimes Table -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Showtimes</h5>
+            <a asp-action="CreateShowtime" class="btn btn-success btn-sm">
+                <i class="fas fa-plus me-2"></i>Add New Showtime
+            </a>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Movie</th>
+                                <th>Cinema</th>
+                                <th>Date & Time</th>
+                                <th>Price</th>
+                                <th>Seats</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var showtime in Model)
+                            {
+                                <tr>
+                                    <td>@showtime.Movie?.Title</td>
+                                    <td>@showtime.Cinema?.Name</td>
+                                    <td>@showtime.StartTime.ToString("MMM dd, yyyy hh:mm tt")</td>
+                                    <td>@showtime.Price.ToString("C")</td>
+                                    <td>@showtime.AvailableSeats/@showtime.TotalSeats</td>
+                                    <td>
+                                        <a asp-action="EditShowtime" asp-route-id="@showtime.ShowtimeId" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form asp-action="DeleteShowtime" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@showtime.ShowtimeId" />
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Are you sure you want to delete this showtime?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>No showtimes found.
+                </div>
+            }
+        </div>
+    </div>
+</div>

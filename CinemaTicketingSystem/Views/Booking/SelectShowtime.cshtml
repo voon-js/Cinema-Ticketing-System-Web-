@@ -1,0 +1,33 @@
+﻿@model IEnumerable<CinemaTicketingSystem.Models.Showtime>
+
+@{
+    ViewData["Title"] = "Select Showtime";
+}
+
+<h2>Select Showtime for @ViewBag.MovieTitle</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Cinema</th>
+            <th>Showtime</th>
+            <th>Available Seats</th>
+            <th>Price</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Cinema?.Name</td>
+                <td>@item.StartTime.ToString("f")</td>
+                <td>@item.AvailableSeats</td>
+                <td>@item.Price.ToString("C")</td>
+                <td>
+                    <a asp-action="BookTickets" asp-route-id="@item.ShowtimeId" class="btn btn-success">Book Tickets</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,133 @@
+﻿@{
+    ViewData["Title"] = "Home - Cinema Paradise";
+}
+
+<!-- Hero Section -->
+<section class="hero-section bg-dark text-white py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-3">Welcome to Cinema Paradise</h1>
+                <p class="lead mb-4">Experience movies like never before with state-of-the-art facilities, comfortable seating, and the latest blockbusters.</p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a asp-controller="Booking" asp-action="SelectMovie" class="btn btn-primary btn-lg">
+                        <i class="fas fa-ticket-alt me-2"></i>Book Tickets Now
+                    </a>
+                    <a href="#now-showing" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-film me-2"></i>Now Showing
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="~/images/homePic.jpg"
+                     alt="Modern cinema" class="img-fluid rounded shadow" style="max-height: 300px;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Why Choose Cinema Paradise?</h2>
+        <div class="row">
+            <div class="col-md-4 text-center mb-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-couch fa-3x text-primary"></i>
+                </div>
+                <h4>Luxurious Seating</h4>
+                <p>Enjoy premium recliner seats with ample legroom and personalized comfort.</p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-film fa-3x text-primary"></i>
+                </div>
+                <h4>Dolby Atmos Sound</h4>
+                <p>Immersive audio experience with our state-of-the-art sound systems.</p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-ticket-alt fa-3x text-primary"></i>
+                </div>
+                <h4>Easy Booking</h4>
+                <p>Book your tickets online with our user-friendly platform and secure payment.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Now Showing Section -->
+<section id="now-showing" class="now-showing-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Now Showing</h2>
+        <div class="row">
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100">
+                    <img src="~/images/posters/matrix.jpg"
+                         class="card-img-top" alt="Action Movie" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">The Matrix</h5>
+                        <p class="card-text">Sci-Fi/Action • 2h 16m</p>
+                        <span class="badge bg-warning text-dark">PG-13</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100">
+                    <img src="~/images/posters/inception.jpg"
+                         class="card-img-top" alt="Drama Movie" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">Inception</h5>
+                        <p class="card-text">Action/Thriller • 2h 28m</p>
+                        <span class="badge bg-warning text-dark">PG-13</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100">
+                    <img src="~/images/posters/darkknight.jpg"
+                         class="card-img-top" alt="Comedy Movie" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">The Dark Knight</h5>
+                        <p class="card-text">Action/Crime • 2h 32m</p>
+                        <span class="badge bg-warning text-dark">PG-13</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100">
+                    <img src="~/images/posters/interstellar.jpg"
+                         class="card-img-top" alt="Sci-Fi Movie" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">Interstellar</h5>
+                        <p class="card-text">Sci-Fi/Adventure • 2h 49m</p>
+                        <span class="badge bg-warning text-dark">PG-13</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a asp-controller="Movies" asp-action="Index" class="btn btn-outline-primary">
+                View All Movies <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-icon {
+            transition: transform 0.3s ease;
+        }
+
+            .feature-icon:hover {
+                transform: scale(1.1);
+            }
+    </style>
+}

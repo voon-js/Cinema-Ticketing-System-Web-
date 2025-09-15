@@ -1,0 +1,79 @@
+﻿@model IEnumerable<CinemaTicketingSystem.Models.Booking>
+
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<h2>My Bookings</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">You haven't made any bookings yet.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Movie</th>
+                <th>Cinema</th>
+                <th>Showtime</th>
+                <th>Seats</th>
+                <th>Tickets</th>
+                <th>Total Amount</th>
+                <th>Booking Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                // Calculate seat labels
+                var seatLabels = new List<string>();
+                if (!string.IsNullOrEmpty(item.SeatNumbers))
+                {
+                    foreach (var seatStr in item.SeatNumbers.Split(','))
+                    {
+                        if (int.TryParse(seatStr, out int seatNumber))
+                        {
+                            var row = ((char)('A' + (seatNumber / 10))).ToString();
+                            var seat = (seatNumber % 10) + 1;
+                            seatLabels.Add(row + seat);
+                        }
+                    }
+                }
+
+                <tr>
+                    <td>@item.Showtime?.Movie?.Title</td>
+                    <td>@item.Showtime?.Cinema?.Name</td>
+                    <td>@item.Showtime?.StartTime.ToString("f")</td>
+                    <td>@(seatLabels.Any() ? string.Join(", ", seatLabels) : "General")</td>
+                    <td>@item.NumberOfTickets</td>
+                    <td>@item.TotalAmount.ToString("C")</td>
+                    <td>@item.BookingDate.ToString("g")</td>
+
+                    <td>
+                        @if (item.Status == "Confirmed" && item.Showtime?.StartTime > DateTime.Now.AddHours(1))
+                        {
+                            <form asp-action="CancelBooking" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@item.BookingId" />
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                    Cancel
+                                </button>
+                            </form>
+                        }
+                        else if (item.Status == "Cancelled")
+                        {
+                            <span class="text-muted">Cancelled</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Cannot cancel</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
